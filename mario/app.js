@@ -11,6 +11,7 @@ loadSound("coin", "../mario/sounds/coin.wav");
 loadSound("lose", "../mario/sounds/lose.wav");
 loadSound("grow", "../mario/sounds/grow.wav");
 loadSound("stomp", "../mario/sounds/stomp.wav");
+loadSound("theme", "../mario/sounds/theme.mp3");
 
 loadRoot("https://i.imgur.com/");
 loadSprite("regBrick", "pogC9x5.png");
@@ -41,6 +42,8 @@ scene("game", ({ score }) => {
   const ENEMY_MOVE_SPEED = -30;
   const JUMP_FORCE = 400;
   const FALL_DEATH = 400;
+
+  // const theme = play("theme");fix later
 
   const maps = [
     "                                                                                                                 ",
@@ -197,6 +200,7 @@ scene("game", ({ score }) => {
 
   player.collides("enemy", (e) => {
     if (isJumping) {
+      // theme.stop();
       destroy(e);
       currentScore.value++;
       currentScore.text = `Score: ${currentScore.value}`;
