@@ -13,7 +13,10 @@ loadSound("lose", "../mario/sounds/lose.wav");
 loadSound("grow", "../mario/sounds/grow.wav");
 loadSound("stomp", "../mario/sounds/stomp.wav");
 loadSound("theme", "../mario/sounds/theme.mp3");
-loadSound("breakBrick", "../mario/sounds/breakBlock.wav");
+loadSound(
+  "breakBrick",
+  "https://ntmariobucket.s3.us-west-1.amazonaws.com/breakBlock.wav"
+);
 
 loadSprite("wall", "./sounds/wall.png");
 loadRoot("https://i.imgur.com/");
