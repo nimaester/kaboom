@@ -28,6 +28,10 @@ loadSound(
 );
 
 loadSprite("wall", "https://ntmariobucket.s3.us-west-1.amazonaws.com/wall.png");
+loadSprite(
+  "portal",
+  "https://ntmariobucket.s3.us-west-1.amazonaws.com/wall.png"
+);
 loadRoot("https://i.imgur.com/");
 loadSprite("regBrick", "pogC9x5.png");
 loadSprite("redBrick", "M6rwarW.png");
@@ -50,41 +54,60 @@ loadSprite("enemy2", "SvV4ueD.png");
 loadSprite("shroom", "0wMd92p.png");
 loadSprite("coin", "wbKxhcd.png");
 
-scene("game", ({ score }) => {
+scene("game", ({ score, level }) => {
   layers(["bg", "obj", "ui"], "obj");
 
   const MOVE_SPEED = 120;
-  const ENEMY_MOVE_SPEED = -100;
+  const ENEMY_MOVE_SPEED = 1;
   const JUMP_FORCE = 400;
   const FALL_DEATH = 400;
 
   // const theme = play("theme");fix later
 
   const maps = [
-    "                                                                                                                 ",
-    "                                                        ccc                                                      ",
-    "                                                        ccc                                                      ",
-    "                                                                                                                 ",
-    "                                                                                                                 ",
-    "                         iiiiii                         bmb                                      biiib           ",
-    "                                                                            ccc                                  ",
-    "                                                                            ccc                                  ",
-    "                                                                           ccccc                                 ",
-    "                        bbibbmbb                      biiiiib            bbbbbbbbb              bbbbbbb          ",
-    "                                         ====                                                                    ",
-    "                                         =t =                                                                  t ",
-    "w                          e          e w=  =w         e        w    w     e       e   w    w   e           ew   ",
-    "=================================================================    ===================    =====================",
+    [
+      "                                                                                                                 ",
+      "                                                        ccc                                                      ",
+      "                                                        ccc                                                      ",
+      "                                                                                                                 ",
+      "                                                                                                                 ",
+      "                         iiiiii                         bmb                                      biiib           ",
+      "                                                                            ccc                                  ",
+      "                                                                            ccc                                  ",
+      "                                                                           ccccc                                 ",
+      "                        bbibbmbb                      biiiiib            bbbbbbbbb              bbbbbbb          ",
+      "     p                                   ====                                                                    ",
+      "     t                                   =t =                                                                  t ",
+      "w                          e          e w=  =w         e        w    w     e       e   w    w   e           ew   ",
+      "=================================================================    ===================    =====================",
+    ],
+    [
+      "                                                                                                                 ",
+      "                                                        ccc                                                      ",
+      "                                                        ccc                                                      ",
+      "                                                                                                                 ",
+      "                                                                                                                 ",
+      "                         iiiiii                         bmb                                      biiib           ",
+      "                                                                            ccc                                  ",
+      "                                                                            ccc                                  ",
+      "                                                                           ccccc                                 ",
+      "                        bbibbmbb                      biiiiib            bbbbbbbbb              bbbbbbb          ",
+      "      p                                   ssss                                                                    ",
+      "      t                                  st s                                                                  t ",
+      "w                          e          e ws  sw         e        w    w     e       e   w    w   e           ew   ",
+      "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss    sssssssssssssssssss    sssssssssssssssssssss",
+    ],
   ];
 
-  const levelCfg = {
+  let levelCfg = {
     width: 20,
     height: 20,
     "=": [sprite("redBrick"), solid()],
     b: [sprite("regBrick"), solid(), "regBrick"],
+    s: [sprite("steelBrick"), solid(), "steelBrick", scale(0.5)],
     i: [sprite("coinBrickActive"), solid(), "coinBrick"],
     m: [sprite("shroomBrickActive"), solid(), "mushroomBrick"],
-    t: [sprite("pipeFull"), solid()],
+    t: [sprite("pipeFull"), solid(), "pipeFull"],
     e: [sprite("enemy1"), { dir: -1 }, "enemy"],
     E: [sprite("enemy2"), { dir: -1 }, "enemy"],
     p: [sprite("player"), solid()],
@@ -92,9 +115,10 @@ scene("game", ({ score }) => {
     x: [sprite("brickNotActive"), solid()],
     M: [sprite("shroom"), "shroom", body()],
     w: [sprite("wall"), "wall", scale(0.01)],
+    p: [sprite("portal"), "portal", scale(0.0001)],
   };
 
-  const gameLevel = addLevel(maps, levelCfg);
+  const gameLevel = addLevel(maps[level], levelCfg);
 
   const player = add([
     sprite("player"),
@@ -106,7 +130,7 @@ scene("game", ({ score }) => {
   ]);
 
   const currentScore = add([
-    text(`Score: `),
+    text(`Score: ${score}`),
     pos(vec2(0, 50)),
     layer("ui"),
     {
@@ -114,7 +138,7 @@ scene("game", ({ score }) => {
     },
   ]);
 
-  add([text("Level " + "1")]);
+  add([text("Level: " + parseInt(level + 1)), pos(0, 25)]);
 
   function big() {
     let timer = 0;
@@ -194,6 +218,15 @@ scene("game", ({ score }) => {
     s.dir = -s.dir;
   });
 
+  player.collides("portal", () => {
+    keyDown("down", () => {
+      go("game", {
+        level: (level += 1) % maps.length,
+        score: currentScore.value,
+      });
+    });
+  });
+
   player.collides("shroom", (s) => {
     play("grow", {
       volume: 0.5,
@@ -236,11 +269,11 @@ scene("game", ({ score }) => {
   });
 });
 
-scene("lose", ({ score }) => {
+scene("lose", ({ score, level }) => {
   add([
     text(` GAME OVER \n Score: ${score}\n Play Again? (Y) `, 40),
     keyPress("y", () => {
-      go("game", score);
+      go("game", { score: 0, level: 0 });
     }),
     origin("center"),
     pos(width() / 2, height() / 2),
@@ -252,4 +285,4 @@ scene("lose", ({ score }) => {
   });
 });
 
-start("game", { score: 0 });
+start("game", { score: 0, level: 0 });
