@@ -6,19 +6,28 @@ kaboom({
   clearColor: [0, 0, 0, 1],
 });
 
-loadSound("shrink", "../mario/sounds/shrink.wav");
-loadSound("jump", "../mario/sounds/jump.wav");
-loadSound("coin", "../mario/sounds/coin.wav");
-loadSound("lose", "../mario/sounds/lose.wav");
-loadSound("grow", "../mario/sounds/grow.wav");
-loadSound("stomp", "../mario/sounds/stomp.wav");
-loadSound("theme", "../mario/sounds/theme.mp3");
+loadSound(
+  "shrink",
+  "https://ntmariobucket.s3.us-west-1.amazonaws.com/shrink.wav"
+);
+loadSound("jump", "https://ntmariobucket.s3.us-west-1.amazonaws.com/jump.wav");
+loadSound("coin", "https://ntmariobucket.s3.us-west-1.amazonaws.com/coin.wav");
+loadSound("lose", "https://ntmariobucket.s3.us-west-1.amazonaws.com/lose.wav");
+loadSound("grow", "https://ntmariobucket.s3.us-west-1.amazonaws.com/grow.wav");
+loadSound(
+  "stomp",
+  "https://ntmariobucket.s3.us-west-1.amazonaws.com/stomp.wav"
+);
+loadSound(
+  "theme",
+  "https://ntmariobucket.s3.us-west-1.amazonaws.com/theme.mp3"
+);
 loadSound(
   "breakBrick",
   "https://ntmariobucket.s3.us-west-1.amazonaws.com/breakBlock.wav"
 );
 
-loadSprite("wall", "./sounds/wall.png");
+loadSprite("wall", "https://ntmariobucket.s3.us-west-1.amazonaws.com/wall.png");
 loadRoot("https://i.imgur.com/");
 loadSprite("regBrick", "pogC9x5.png");
 loadSprite("redBrick", "M6rwarW.png");
