@@ -1,18 +1,21 @@
 kaboom({
   global: true,
   fullscreen: true,
-  scale: 2,
+  scale: 1.4,
   debug: true,
   clearColor: [0, 0, 0, 1],
 });
 
+loadSound("shrink", "../mario/sounds/shrink.wav");
 loadSound("jump", "../mario/sounds/jump.wav");
 loadSound("coin", "../mario/sounds/coin.wav");
 loadSound("lose", "../mario/sounds/lose.wav");
 loadSound("grow", "../mario/sounds/grow.wav");
 loadSound("stomp", "../mario/sounds/stomp.wav");
 loadSound("theme", "../mario/sounds/theme.mp3");
+loadSound("breakBrick", "../mario/sounds/breakBlock.wav");
 
+loadSprite("wall", "./sounds/wall.png");
 loadRoot("https://i.imgur.com/");
 loadSprite("regBrick", "pogC9x5.png");
 loadSprite("redBrick", "M6rwarW.png");
@@ -39,7 +42,7 @@ scene("game", ({ score }) => {
   layers(["bg", "obj", "ui"], "obj");
 
   const MOVE_SPEED = 120;
-  const ENEMY_MOVE_SPEED = -30;
+  const ENEMY_MOVE_SPEED = -100;
   const JUMP_FORCE = 400;
   const FALL_DEATH = 400;
 
@@ -47,18 +50,18 @@ scene("game", ({ score }) => {
 
   const maps = [
     "                                                                                                                 ",
+    "                                                        ccc                                                      ",
+    "                                                        ccc                                                      ",
     "                                                                                                                 ",
     "                                                                                                                 ",
-    "                                                                                                                 ",
-    "                                                                                                                 ",
-    "                       iiiiii                              bmb                                                   ",
-    "                                                                                                                 ",
-    "                                                    c                                                            ",
-    "                                                   ccc                                                           ",
-    "                      bbibbmbb                     ccc   biiiiib                                                 ",
-    "                                         ====       c                                                            ",
+    "                         iiiiii                         bmb                                      biiib           ",
+    "                                                                            ccc                                  ",
+    "                                                                            ccc                                  ",
+    "                                                                           ccccc                                 ",
+    "                        bbibbmbb                      biiiiib            bbbbbbbbb              bbbbbbb          ",
+    "                                         ====                                                                    ",
     "                                         =t =                                                                  t ",
-    "                           e          e  =  =                                                                    ",
+    "w                          e          e w=  =w         e        w    w     e       e   w    w   e           ew   ",
     "=================================================================    ===================    =====================",
   ];
 
@@ -66,20 +69,20 @@ scene("game", ({ score }) => {
     width: 20,
     height: 20,
     "=": [sprite("redBrick"), solid()],
-    b: [sprite("regBrick"), solid()],
+    b: [sprite("regBrick"), solid(), "regBrick"],
     i: [sprite("coinBrickActive"), solid(), "coinBrick"],
     m: [sprite("shroomBrickActive"), solid(), "mushroomBrick"],
     t: [sprite("pipeFull"), solid()],
-    e: [sprite("enemy1"), solid(), body(), "enemy"],
-    E: [sprite("enemy2"), solid(), body(), "enemy"],
+    e: [sprite("enemy1"), { dir: -1 }, "enemy"],
+    E: [sprite("enemy2"), { dir: -1 }, "enemy"],
     p: [sprite("player"), solid()],
     c: [sprite("coin"), "coin"],
     x: [sprite("brickNotActive"), solid()],
     M: [sprite("shroom"), "shroom", body()],
+    w: [sprite("wall"), "wall", scale(0.01)],
   };
 
   const gameLevel = addLevel(maps, levelCfg);
-  let isJumping = true;
 
   const player = add([
     sprite("player"),
@@ -87,7 +90,7 @@ scene("game", ({ score }) => {
     pos(40, 0),
     body(),
     big(),
-    origin("bot"),
+    origin("top"),
   ]);
 
   const currentScore = add([
@@ -122,7 +125,7 @@ scene("game", ({ score }) => {
         isBig = false;
       },
       biggify(time) {
-        this.scale = vec2(1.3);
+        this.scale = vec2(1.4);
         timer = time;
         isBig = true;
       },
@@ -139,20 +142,11 @@ scene("game", ({ score }) => {
 
   keyDown("space", () => {
     if (player.grounded()) {
-      isJumping = true;
       play("jump", {
         volume: 0.1,
         speed: 1.5,
       });
       player.jump(JUMP_FORCE);
-    } else if (player.falling()) {
-      isJumping = true;
-    }
-  });
-
-  player.action(() => {
-    if (player.grounded()) {
-      isJumping = false;
     }
   });
 
@@ -167,19 +161,30 @@ scene("game", ({ score }) => {
       destroy(obj);
       gameLevel.spawn("x", obj.gridPos.sub(0, 0));
     }
+    if (obj.is("regBrick") && player.isBig()) {
+      destroy(obj);
+      play("breakBrick", {
+        volume: 0.5,
+        speed: 1,
+      });
+    }
   });
 
   action("shroom", (m) => {
-    m.move(20, 0);
+    m.move(30, 0);
   });
 
   action("enemy", (e) => {
-    e.move(ENEMY_MOVE_SPEED, 0);
+    e.move(e.dir * ENEMY_MOVE_SPEED, 0);
+  });
+
+  collides("enemy", "wall", (s) => {
+    s.dir = -s.dir;
   });
 
   player.collides("shroom", (s) => {
     play("grow", {
-      volume: 0.1,
+      volume: 0.5,
       speed: 0.9,
     });
     destroy(s);
@@ -199,11 +204,13 @@ scene("game", ({ score }) => {
   });
 
   player.collides("enemy", (e) => {
-    if (isJumping) {
-      // theme.stop();
+    if (player.isBig()) {
+      player.smallify();
+      play("shrink", {
+        volume: 0.5,
+        speed: 1.0,
+      });
       destroy(e);
-      currentScore.value++;
-      currentScore.text = `Score: ${currentScore.value}`;
     } else {
       go("lose", { score: currentScore.value });
     }
@@ -219,7 +226,7 @@ scene("game", ({ score }) => {
 
 scene("lose", ({ score }) => {
   add([
-    text(`GAME OVER \nScore: ${score}\nPlay Again? (Y)`, 40),
+    text(` GAME OVER \n Score: ${score}\n Play Again? (Y) `, 40),
     keyPress("y", () => {
       go("game", score);
     }),
@@ -228,7 +235,7 @@ scene("lose", ({ score }) => {
   ]);
 
   play("lose", {
-    volume: 0.1,
+    volume: 0.5,
     speed: 0.9,
   });
 });
