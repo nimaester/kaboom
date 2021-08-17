@@ -37,6 +37,23 @@ loadSprite(
   "portal",
   "https://ntmariobucket.s3.us-west-1.amazonaws.com/wall.png"
 );
+loadSprite(
+  "player",
+  "https://ntmariobucket.s3.us-west-1.amazonaws.com/mario.png"
+);
+loadSprite(
+  "player-reverse",
+  "https://ntmariobucket.s3.us-west-1.amazonaws.com/mario-reverse.png"
+);
+loadSprite(
+  "jumping_player",
+  "https://ntmariobucket.s3.us-west-1.amazonaws.com/jumping_player.png"
+);
+loadSprite(
+  "jumping_player_reverse",
+  "https://ntmariobucket.s3.us-west-1.amazonaws.com/jumping_player_reverse.png"
+);
+
 loadRoot("https://i.imgur.com/");
 loadSprite("regBrick", "pogC9x5.png");
 loadSprite("redBrick", "M6rwarW.png");
@@ -52,7 +69,6 @@ loadSprite("pipeTopRight", "hj2GK4n.png");
 loadSprite("pipeLeft", "c1cYSbt.png");
 loadSprite("pipeRight", "nqQ79eI.png");
 
-loadSprite("player", "Wb1qfhK.png");
 loadSprite("enemy1", "LmseqUG.png");
 loadSprite("enemy2", "SvV4ueD.png");
 
@@ -63,7 +79,7 @@ scene("game", ({ score, level }) => {
   layers(["bg", "obj", "ui"], "obj");
 
   const MOVE_SPEED = 120;
-  const ENEMY_MOVE_SPEED = 1;
+  const ENEMY_MOVE_SPEED = 100;
   const JUMP_FORCE = 400;
   const FALL_DEATH = 400;
 
@@ -88,18 +104,18 @@ scene("game", ({ score, level }) => {
     ],
     [
       "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "     pp                                                                                                          ",
-      "     t                                                                                                           ",
-      "w                                                                                                               w",
+      "                                                   c                                                             ",
+      "                                                 ccccc                                                           ",
+      "                                                ccccccc                                                          ",
+      "                                                 ccccc                                                           ",
+      "              ii                                                                                                 ",
+      "                                             bbbb     bbbb                                                       ",
+      "                                           bbbb         bbbb                                                     ",
+      "                                         bbbb             bbbb                                                   ",
+      "          bbbbmmbbbb                   bbbbb                bbbb                                                 ",
+      "                                                                                                               pp",
+      "                                                                                                               t ",
+      "w                             e                       e                     e                          e        w",
       "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
     ],
     [
@@ -132,6 +148,9 @@ scene("game", ({ score, level }) => {
     e: [sprite("enemy1"), { dir: -1 }, "enemy"],
     E: [sprite("enemy2"), { dir: -1 }, "enemy"],
     p: [sprite("player"), solid()],
+    P: [sprite("player-reverse"), solid()],
+    j: [sprite("jumping_player"), solid()],
+    J: [sprite("jumping_player_reverse"), solid()],
     c: [sprite("coin"), "coin"],
     x: [sprite("brickNotActive"), solid()],
     M: [sprite("shroom"), "shroom", body()],
@@ -144,10 +163,10 @@ scene("game", ({ score, level }) => {
   const player = add([
     sprite("player"),
     solid(),
-    pos(40, 0),
+    pos(20, 0),
     body(),
     big(),
-    origin("top"),
+    origin("bot"),
   ]);
 
   const currentScore = add([
@@ -155,7 +174,7 @@ scene("game", ({ score, level }) => {
     pos(vec2(0, 50)),
     layer("ui"),
     {
-      value: 0,
+      value: score,
     },
   ]);
 
@@ -164,6 +183,7 @@ scene("game", ({ score, level }) => {
   function big() {
     let timer = 0;
     let isBig = false;
+    let direction = "right";
     return {
       update() {
         if (isBig) {
@@ -191,12 +211,12 @@ scene("game", ({ score, level }) => {
 
   keyDown("left", () => {
     player.move(-MOVE_SPEED, 0);
-    // player.changeSprite('left')
+    player.changeSprite("player-reverse");
   });
 
   keyDown("right", () => {
-    // player.changeSprite('default')
     player.move(MOVE_SPEED, 0);
+    player.changeSprite("player");
   });
 
   keyDown("space", () => {
