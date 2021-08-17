@@ -45,20 +45,12 @@ loadSprite(
   "player-reverse",
   "https://ntmariobucket.s3.us-west-1.amazonaws.com/mario-reverse.png"
 );
-loadSprite(
-  "jumping_player",
-  "https://ntmariobucket.s3.us-west-1.amazonaws.com/jumping_player.png"
-);
-loadSprite(
-  "jumping_player_reverse",
-  "https://ntmariobucket.s3.us-west-1.amazonaws.com/jumping_player_reverse.png"
-);
 
 loadRoot("https://i.imgur.com/");
 loadSprite("regBrick", "pogC9x5.png");
 loadSprite("redBrick", "M6rwarW.png");
 loadSprite("blueBrick", "fVscIbn.png");
-loadSprite("blueBrick2", "3e5YRQd.png");
+loadSprite("blueRegBrick", "3e5YRQd.png");
 loadSprite("steelBrick", "gqVoI2b.png");
 loadSprite("coinBrickActive", "gesQ1KP.png");
 loadSprite("shroomBrickActive", "gesQ1KP.png");
@@ -97,8 +89,8 @@ scene("game", ({ score, level }) => {
       "                                                                            ccc                                  ",
       "                                                                           ccccc                                 ",
       "                        bbibbmbb                      biiiiib            bbbbbbbbb              bbbbbbb          ",
-      "     pp                                  ====                                                                  pp",
-      "     t                                   =t =                                                                  t ",
+      "                                         ====                                                                  WW",
+      "                                         =t =                                                                  t ",
       "w                          e          e w=  =w         e        w    w     e       e   w    w   e           ew   ",
       "=================================================================    ===================    =====================",
     ],
@@ -107,32 +99,16 @@ scene("game", ({ score, level }) => {
       "                                                   c                                                             ",
       "                                                 ccccc                                                           ",
       "                                                ccccccc                                                          ",
-      "                                                 ccccc                                                           ",
-      "              ii                                                                                                 ",
-      "                                             bbbb     bbbb                                                       ",
-      "                                           bbbb         bbbb                                                     ",
-      "                                         bbbb             bbbb                                                   ",
-      "          bbbbmmbbbb                   bbbbb                bbbb                                                 ",
-      "                                                                                                               pp",
-      "                                                                                                               t ",
-      "w                             e                       e                     e                          e        w",
-      "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
-    ],
-    [
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "                                                                                                                 ",
-      "     pp                                                                                                          ",
-      "     t                                                                                                           ",
-      "w                                                                                                               w",
-      "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+      "                                                 ccccc                                  cc                       ",
+      "          BiiiiB                                                                       cccc                      ",
+      "                                              BBBB    BBBB                            cccccc                     ",
+      "                                            BBBB        BBBB                            cc                       ",
+      "                                          BBBB            BBBB                                                   ",
+      "         BBBmmBBB                       BBBBB      ()       BBBB                      BBBBBB                     ",
+      "                                                 ()[]()                                                        WW",
+      "                                                 [][][]                                                        t ",
+      "w                e       w    we                w[][][]w       e    w    w  e                          e     w   ",
+      "SSSSSSSSSSSSSSSSSSSSSSSSSS    SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS    SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
     ],
   ];
 
@@ -142,6 +118,14 @@ scene("game", ({ score, level }) => {
     "=": [sprite("redBrick"), solid()],
     b: [sprite("regBrick"), solid(), "regBrick"],
     s: [sprite("steelBrick"), solid(), "steelBrick", scale(0.5)],
+    B: [sprite("blueRegBrick"), solid(), "blueRegBrick", scale(0.5)],
+    S: [sprite("blueBrick"), solid(), "blueBrick", scale(0.5)],
+
+    "[": [sprite("pipeLeft"), solid(), "pipeLeft", scale(0.5)],
+    "]": [sprite("pipeRight"), solid(), "pipeRight", scale(0.5)],
+    "(": [sprite("pipeTopLeft"), solid(), "pipeTopLeft", scale(0.5)],
+    ")": [sprite("pipeTopRight"), solid(), "pipeTopRight", scale(0.5)],
+
     i: [sprite("coinBrickActive"), solid(), "coinBrick"],
     m: [sprite("shroomBrickActive"), solid(), "mushroomBrick"],
     t: [sprite("pipeFull"), solid(), "pipeFull"],
@@ -149,13 +133,11 @@ scene("game", ({ score, level }) => {
     E: [sprite("enemy2"), { dir: -1 }, "enemy"],
     p: [sprite("player"), solid()],
     P: [sprite("player-reverse"), solid()],
-    j: [sprite("jumping_player"), solid()],
-    J: [sprite("jumping_player_reverse"), solid()],
     c: [sprite("coin"), "coin"],
     x: [sprite("brickNotActive"), solid()],
     M: [sprite("shroom"), "shroom", body()],
     w: [sprite("wall"), "wall", scale(0.01)],
-    p: [sprite("portal"), "portal", scale(0.01)],
+    W: [sprite("portal"), "portal", scale(0.01)],
   };
 
   const gameLevel = addLevel(maps[level], levelCfg);
