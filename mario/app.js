@@ -7,6 +7,7 @@ kaboom({
   crisp: true,
 });
 
+// sounds
 loadSound(
   "shrink",
   "https://ntmariobucket.s3.us-west-1.amazonaws.com/shrink.wav"
@@ -32,6 +33,7 @@ loadSound(
   "https://ntmariobucket.s3.us-west-1.amazonaws.com/breakBlock.wav"
 );
 
+// sprites
 loadSprite("wall", "https://ntmariobucket.s3.us-west-1.amazonaws.com/wall.png");
 loadSprite(
   "portal",
@@ -45,7 +47,6 @@ loadSprite(
   "player-reverse",
   "https://ntmariobucket.s3.us-west-1.amazonaws.com/mario-reverse.png"
 );
-
 loadRoot("https://i.imgur.com/");
 loadSprite("regBrick", "pogC9x5.png");
 loadSprite("redBrick", "M6rwarW.png");
@@ -70,13 +71,13 @@ loadSprite("coin", "wbKxhcd.png");
 scene("game", ({ score, level }) => {
   layers(["bg", "obj", "ui"], "obj");
 
+  // speed of objects such as player, enemies, items
   const MOVE_SPEED = 120;
   const ENEMY_MOVE_SPEED = 100;
   const JUMP_FORCE = 400;
   const FALL_DEATH = 400;
 
-  // const theme = play("theme");fix later
-
+  // map layouts
   const maps = [
     [
       "                                                                                                                 ",
@@ -120,12 +121,10 @@ scene("game", ({ score, level }) => {
     s: [sprite("steelBrick"), solid(), "steelBrick", scale(0.5)],
     B: [sprite("blueRegBrick"), solid(), "blueRegBrick", scale(0.5)],
     S: [sprite("blueBrick"), solid(), "blueBrick", scale(0.5)],
-
     "[": [sprite("pipeLeft"), solid(), "pipeLeft", scale(0.5)],
     "]": [sprite("pipeRight"), solid(), "pipeRight", scale(0.5)],
     "(": [sprite("pipeTopLeft"), solid(), "pipeTopLeft", scale(0.5)],
     ")": [sprite("pipeTopRight"), solid(), "pipeTopRight", scale(0.5)],
-
     i: [sprite("coinBrickActive"), solid(), "coinBrick"],
     m: [sprite("shroomBrickActive"), solid(), "mushroomBrick"],
     t: [sprite("pipeFull"), solid(), "pipeFull"],
@@ -162,6 +161,7 @@ scene("game", ({ score, level }) => {
 
   add([text("Level: " + parseInt(level + 1)), pos(0, 25)]);
 
+  // makes player big able to break bricks and take damage from enemies
   function big() {
     let timer = 0;
     let isBig = false;
@@ -191,6 +191,7 @@ scene("game", ({ score, level }) => {
     };
   }
 
+  // commands
   keyDown("left", () => {
     player.move(-MOVE_SPEED, 0);
     player.changeSprite("player-reverse");
@@ -211,6 +212,7 @@ scene("game", ({ score, level }) => {
     }
   });
 
+  // actions
   player.on("headbump", (obj) => {
     if (obj.is("coinBrick")) {
       gameLevel.spawn("c", obj.gridPos.sub(0, 1));
@@ -222,7 +224,7 @@ scene("game", ({ score, level }) => {
       destroy(obj);
       gameLevel.spawn("x", obj.gridPos.sub(0, 0));
     }
-    if (obj.is("regBrick") && player.isBig()) {
+    if ((obj.is("regBrick") || obj.is("blueRegBrick")) && player.isBig()) {
       destroy(obj);
       play("breakBrick", {
         volume: 0.5,
@@ -246,7 +248,7 @@ scene("game", ({ score, level }) => {
   player.collides("portal", () => {
     keyDown("down", () => {
       play("enterPipe", {
-        volume: 0.3,
+        volume: 0.2,
         speed: 1,
       });
       go("game", {
@@ -299,6 +301,7 @@ scene("game", ({ score, level }) => {
   });
 });
 
+// game over scene
 scene("lose", ({ score, level }) => {
   add([
     text(` GAME OVER \n Score: ${score}\n Play Again? (Y) `, 40),
@@ -315,4 +318,5 @@ scene("lose", ({ score, level }) => {
   });
 });
 
+// starts the game
 start("game", { score: 0, level: 0 });
