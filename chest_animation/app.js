@@ -14,13 +14,6 @@ loadSprite("wallpaper", "./img/wallpaper.jpeg");
 scene("open_chest", () => {
   layers(["bg", "ui"]);
 
-  const config = {
-    c: [sprite("full_chest"), solid(), "full_chest", scale(0.5)],
-    t: [sprite("open_lid"), solid()],
-    o: [sprite("top_chest"), solid()],
-    k: [sprite("key"), solid()],
-  };
-
   // add([sprite("wallpaper"), pos(0, 0), origin("topleft"), layer("bg")]);
 
   function status() {
@@ -66,14 +59,25 @@ scene("open_chest", () => {
           volume: 1,
           speed: 1,
         });
+        go("rewards");
       }, 1700);
     } else {
       chest.close();
       chest.changeSprite("full_chest");
     }
   });
+});
 
-  focus();
+scene("rewards", () => {
+  add([
+    text(` GAME OVER `, 40),
+    keyPress("y", () => {
+      go("open_chest");
+    }),
+    origin("center"),
+    pos(width() / 2, height() / 2),
+    opacity(0.7),
+  ]);
 });
 
 start("open_chest");
