@@ -63,12 +63,13 @@
 
       // load the default sprite "bean"
       loadBean();
-      loadSound("chime", "./img/chime.mp3");
-      loadSprite("full_chest", "./img/chest.png");
-      loadSprite("open_chest", "./img/open_chest.png");
-      loadSprite("key", "./img/key.png");
-      loadSprite("wallpaper", "./img/wallpaper.jpeg");
-      loadSprite("treasure", "./img/treasure.png");
+      loadSound("chime", "./assets/chime.mp3");
+      loadSound("waiting", "./assets/waiting.mp3");
+      loadSprite("full_chest", "./assets/chest.png");
+      loadSprite("open_chest", "./assets/open_chest.png");
+      loadSprite("key", "./assets/key.png");
+      loadSprite("wallpaper", "./assets/wallpaper.jpeg");
+      loadSprite("treasure", "./assets/treasure.png");
 
       // add a game obj to screen, from a list of components
 
@@ -87,12 +88,23 @@
           status(),
         ]);
 
+        const music = play("waiting", {
+          volume: 0.2,
+          loop: true,
+        });
+
+        // make the chest bounce up and down
+        // chest.action(() => {
+        //   chest.move(0, 1);
+        // });
+
         mouseClick(() => {
           if (!chest.isOpen()) {
             chest.open();
             shake(10);
             setTimeout(() => {
               chest.addOpenChest();
+              music.pause();
               play("chime", {
                 volume: 1,
                 speed: 0.9,
