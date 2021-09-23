@@ -36,7 +36,28 @@
           open() {
             isOpen = true;
           },
-          shake() {},
+          addOpenChest() {
+            add([
+              sprite("open_chest"),
+              pos(center()),
+              origin("top"),
+              scale(0.5),
+              status(),
+            ]);
+          },
+          addReward() {
+            // let pos = vec2(0, -1);
+            // // move to 150 degrees direction with by length 10
+            // pos = pos.add(dir(150).scale(10));
+            const addReward = add([
+              sprite("key"),
+              pos(center()),
+              origin("bot"),
+              scale(0.2),
+              status(),
+              move(vec2(0, -0.1), 40),
+            ]);
+          },
         };
       }
 
@@ -53,6 +74,7 @@
 
       scene("open_chest", () => {
         const background = add([sprite("wallpaper"), fixed()]);
+
         const chest = add([
           sprite("full_chest"),
           pos(center()),
@@ -66,21 +88,18 @@
             chest.open();
             shake(10);
             setTimeout(() => {
-              const openChest = add([
-                sprite("open_chest"),
-                pos(center()),
-                origin("top"),
-                scale(0.5),
-                status(),
-              ]);
+              chest.addOpenChest();
               play("chime", {
                 volume: 1,
                 speed: 0.8,
               });
               destroy(chest);
-              // setTimeout(() => {
-              //   go("reward");
-              // }, 100);
+              setTimeout(() => {
+                chest.addReward();
+              }, 100);
+              setTimeout(() => {
+                go("replay");
+              }, 4000);
             }, 1700);
           } else {
             chest.close();
@@ -90,17 +109,17 @@
         focus();
       });
 
-      // scene("reward", () => {
-      //   add([
-      //     text(`Replay? (y)`, 40),
-      //     keyPress("y", () => {
-      //       go("open_chest");
-      //     }),
-      //     origin("center"),
-      //     pos(width() / 2, height() / 2),
-      //     opacity(1),
-      //   ]);
-      // });
+      scene("replay", () => {
+        add([
+          text(`Replay? (y)`, 40),
+          keyPress("y", () => {
+            go("open_chest");
+          }),
+          origin("center"),
+          pos(width() / 2, height() / 2),
+          opacity(1),
+        ]);
+      });
 
       go("open_chest");
     </script>
