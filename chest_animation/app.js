@@ -9,27 +9,19 @@ loadSprite("full_chest", "./img/chest.png");
 loadSprite("open_lid", "./img/open_lid.png");
 loadSprite("top_chest", "./img/top.png");
 loadSprite("key", "./img/key.png");
+loadSprite("wallpaper", "./img/wallpaper.jpeg");
 
 scene("open_chest", () => {
-  const view = [];
-
-  // add(view, {
-  //   c: [sprite("full_chest"), solid(), "full_chest", scale(50)],
-  //   t: [sprite("open_chest"), solid()],
-  //   o: [sprite("top_chest"), solid()],
-  //   k: [sprite("key"), solid()],
-  // });
+  layers(["bg", "ui"]);
 
   const config = {
-    width: 10,
-    height: 10,
-    c: [sprite("full_chest"), solid(), "full_chest"],
+    c: [sprite("full_chest"), solid(), "full_chest", scale(0.5)],
     t: [sprite("open_lid"), solid()],
     o: [sprite("top_chest"), solid()],
     k: [sprite("key"), solid()],
   };
 
-  const level = addLevel(view, config);
+  // add([sprite("wallpaper"), pos(0, 0), origin("topleft"), layer("bg")]);
 
   function status() {
     let isOpen = false;
@@ -43,34 +35,45 @@ scene("open_chest", () => {
       open() {
         isOpen = true;
       },
+      shake() {},
     };
   }
 
+  // const wallpaper = add([layer("bg"), sprite("wallpaper"), origin("center")]);
+
   const chest = add([
+    layer("ui"),
     sprite("full_chest"),
     solid(),
-    pos(vec2(width() / 4, height() / 4)),
+    origin("center"),
     status(),
+    scale(0.5),
+    rotate(0),
+    pos(160, 120),
   ]);
+
+  chest.action(() => {
+    camPos(chest.pos);
+  });
 
   mouseClick(() => {
     if (!chest.isOpen()) {
-      play("chime", {
-        volume: 1,
-        speed: 1,
-      });
       chest.open();
-      chest.changeSprite("open_lid");
+      camShake(10);
+      setTimeout(() => {
+        chest.changeSprite("open_lid");
+        play("chime", {
+          volume: 1,
+          speed: 1,
+        });
+      }, 1700);
     } else {
       chest.close();
       chest.changeSprite("full_chest");
     }
   });
 
-  // chest.action(() => {
-  //   chest.scale = Math.sin(kaboom.time()) * 10;
-  //   chest.angle += kaboom.dt();
-  // });
+  focus();
 });
 
 start("open_chest");

@@ -1,0 +1,82 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+    <title>Chest Animation</title>
+  </head>
+  <body>
+    <script type="module">
+      // import kaboom lib
+      import kaboom from "https://unpkg.com/kaboom@next/dist/kaboom.mjs";
+
+      // initialize kaboom context
+      kaboom({
+        fullscreen: true,
+        clearColor: [0, 0, 0, 1],
+      });
+
+      function status() {
+        let isOpen = false;
+        return {
+          isOpen() {
+            return isOpen;
+          },
+          close() {
+            isOpen = false;
+          },
+          open() {
+            isOpen = true;
+          },
+          shake() {},
+        };
+      }
+
+      // load the default sprite "bean"
+      loadBean();
+      loadSound("chime", "./img/chime.mp3");
+      loadSprite("full_chest", "./img/chest.png");
+      loadSprite("open_lid", "./img/open_lid.png");
+      loadSprite("top_chest", "./img/top.png");
+      loadSprite("key", "./img/key.png");
+      loadSprite("wallpaper", "./img/wallpaper.jpeg");
+
+      // add a game obj to screen, from a list of components
+      const chest = add([
+        sprite("full_chest"),
+        pos(center()),
+        origin("center"),
+        scale(0.5),
+        status(),
+      ]);
+
+      mouseClick(() => {
+        if (!chest.isOpen()) {
+          chest.open();
+          shake(10);
+          setTimeout(() => {
+            // spriteChange("open_lid");
+            play("chime", {
+              volume: 1,
+              speed: 1,
+            });
+          }, 1700);
+        } else {
+          chest.close();
+          // sprite("full_chest");
+        }
+      });
+
+      // move input focus to the game
+      focus();
+    </script>
+  </body>
+</html>
