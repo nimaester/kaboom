@@ -35,9 +35,10 @@
       loadSprite("key", "./assets/key.png");
       loadSprite("wallpaper", "./assets/wallpaper.jpeg");
       loadSprite("treasure", "./assets/treasure.png");
+      loadSprite("sparkle", "./assets/sparkle.png");
 
       // actions
-      const status = () => {
+      function status() {
         let isOpen = false;
         return {
           isOpen() {
@@ -84,8 +85,23 @@
               volume: 2,
             });
           },
+          playSparkle() {
+            loop(0.3, () => {
+              const sparkle = add([
+                sprite("sparkle"),
+                scale(1.9),
+                pos(rand(width() * 0.35, width() * 0.65), height() * 0.6),
+                origin("bot"),
+                area(),
+                move(vec2(0, -1), 500),
+              ]);
+              setTimeout(() => {
+                destroy(sparkle);
+              }, rand(300, 800));
+            });
+          },
         };
-      };
+      }
 
       const fanfare = play("fanfare", { volume: 0.6, speed: 1 });
       const music = play("waiting", {
@@ -145,6 +161,7 @@
               destroy(chest);
               setTimeout(() => {
                 chest.addReward();
+                chest.playSparkle();
               }, 100);
               setTimeout(() => {
                 fanfare.play();
