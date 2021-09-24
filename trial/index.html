@@ -21,10 +21,23 @@
       // initialize kaboom context
       kaboom({
         fullscreen: true,
-        clearColor: [0, 0, 0, 0],
+        clearColor: [0, 0, 0, 1],
+        crisp: true,
       });
 
-      function status() {
+      // Assets needed
+      loadSound("chime", "./assets/chime.mp3");
+      loadSound("fanfare", "./assets/fanfare.mp3");
+      loadSound("shake", "./assets/shake.wav");
+      loadSound("waiting", "./assets/waiting.wav");
+      loadSprite("full_chest", "./assets/chest.png");
+      loadSprite("open_chest", "./assets/open_chest.png");
+      loadSprite("key", "./assets/key.png");
+      loadSprite("wallpaper", "./assets/wallpaper.jpeg");
+      loadSprite("treasure", "./assets/treasure.png");
+
+      // actions
+      const status = () => {
         let isOpen = false;
         return {
           isOpen() {
@@ -39,16 +52,13 @@
           addOpenChest() {
             add([
               sprite("open_chest"),
-              pos(width() * 0.5, height() * 0.55),
+              pos(width() * 0.5, height() - 270),
               origin("top"),
               scale(0.4),
               status(),
             ]);
           },
           addReward() {
-            // let pos = vec2(0, -1);
-            // // move to 150 degrees direction with by length 10
-            // pos = pos.add(dir(150).scale(10)); FIX THIS SO IT STOPS SOMEWHERE
             const addReward = add([
               sprite("treasure"),
               pos(center()),
@@ -63,7 +73,7 @@
           addChest() {
             add([
               sprite("full_chest"),
-              pos(width() * 0.5, height() * 0.6),
+              pos(width() * 0.5, height() * 0.9),
               origin("top"),
               scale(0.4),
               status(),
@@ -78,32 +88,23 @@
             const fanfare = play("fanfare", { volume: 1 });
           },
         };
-      }
-
-      loadSound("chime", "./assets/chime.mp3");
-      loadSound("fanfare", "./assets/fanfare.mp3");
-      loadSound("shake", "./assets/shake.wav");
-      loadSound("waiting", "./assets/waiting.wav");
-      loadSprite("full_chest", "./assets/chest.png");
-      loadSprite("open_chest", "./assets/open_chest.png");
-      loadSprite("key", "./assets/key.png");
-      loadSprite("wallpaper", "./assets/wallpaper.jpeg");
-      loadSprite("treasure", "./assets/treasure.png");
+      };
 
       const fanfare = play("fanfare", { volume: 0.5, speed: 1 });
-      fanfare.stop();
+      const music = play("waiting", {
+        volume: 0.2,
+        speed: 1.6,
+        loop: true,
+      });
+
       scene("open_chest", () => {
-        const background = add([
-          sprite("wallpaper"),
-          fixed(),
-          origin("topleft"),
-        ]);
+        fanfare.stop(); // stop fanfare from playing in the beginning
+        const background = add([sprite("wallpaper"), fixed(), pos(0, 0)]);
 
         const chest = add([
           sprite("full_chest"),
           pos(width() * 0.5, height() * 0.5),
           origin("bot"),
-          gravity(),
           scale(0.4),
           status(),
           solid(),
@@ -113,9 +114,9 @@
 
         // base
         add([
-          pos(width() * 0.5, height() * 0.85),
+          pos(width() * 0.5, height() * 0.9),
           origin("top"),
-          rect(width(), 50),
+          rect(width(), 1),
           opacity(0),
           solid(),
           area(),
@@ -132,13 +133,6 @@
           area(),
           fixed(),
         ]);
-
-        fanfare.pause();
-        const music = play("waiting", {
-          volume: 0.2,
-          speed: 1.6,
-          loop: true,
-        });
 
         mouseClick(() => {
           if (!chest.isOpen()) {
@@ -177,16 +171,18 @@
 
       scene("replay", () => {
         add([
-          text(`Replay? (Y)`, { size: width() / 15 }),
+          text(`Replay? (Y)`, { size: width() / 13 }),
           keyPress("y", () => {
             go("open_chest");
             fanfare.stop();
+            music.play();
           }),
           origin("center"),
           pos(width() * 0.5, height() * 0.5),
         ]);
         mouseClick(() => {
           go("open_chest");
+          music.play();
         });
       });
       go("open_chest");
