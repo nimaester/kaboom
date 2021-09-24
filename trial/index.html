@@ -65,7 +65,7 @@
               origin("bot"),
               scale(0.3),
               status(),
-              move(vec2(0, -1), 30),
+              // move(vec2(0, -1), 30),
               solid(),
               area(),
             ]);
@@ -81,19 +81,16 @@
           },
           playShake() {
             const shakes = play("shake", {
-              volume: 1,
+              volume: 2,
             });
-          },
-          playFanfare() {
-            const fanfare = play("fanfare", { volume: 1 });
           },
         };
       };
 
-      const fanfare = play("fanfare", { volume: 0.5, speed: 1 });
+      const fanfare = play("fanfare", { volume: 0.6, speed: 1 });
       const music = play("waiting", {
-        volume: 0.2,
-        speed: 1.6,
+        volume: 0.4,
+        speed: 1.5,
         loop: true,
       });
 
@@ -123,16 +120,16 @@
           fixed(),
         ]);
 
-        // top
-        add([
-          pos(width() * 0.5, 60),
-          origin("top"),
-          rect(width(), 50),
-          opacity(0),
-          solid(),
-          area(),
-          fixed(),
-        ]);
+        // top * not sure if I want it
+        // add([
+        //   pos(width() * 0.5, 60),
+        //   origin("top"),
+        //   rect(width(), 50),
+        //   opacity(0),
+        //   solid(),
+        //   area(),
+        //   fixed(),
+        // ]);
 
         mouseClick(() => {
           if (!chest.isOpen()) {
