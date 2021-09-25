@@ -30,9 +30,10 @@
       loadSound("fanfare", "./assets/fanfare.mp3");
       loadSound("shake", "./assets/shake.wav");
       loadSound("waiting", "./assets/waiting.wav");
+
       loadSprite("full_chest", "./assets/chest.png");
       loadSprite("open_chest", "./assets/open_chest.png");
-      loadSprite("key", "./assets/key.png");
+      loadSprite("key", "./assets/key.png", "key");
       loadSprite("wallpaper", "./assets/wallpaper.jpeg");
       loadSprite("treasure", "./assets/treasure.png");
       loadSprite("sparkle", "./assets/sparkle.png");
@@ -82,7 +83,7 @@
           },
           playShake() {
             const shakes = play("shake", {
-              volume: 2,
+              volume: 0,
             });
           },
           playSparkle() {
@@ -100,12 +101,13 @@
               }, rand(300, 800));
             });
           },
+          openChest() {},
         };
       }
 
       const fanfare = play("fanfare", { volume: 0.6, speed: 1 });
       const music = play("waiting", {
-        volume: 0.4,
+        volume: 0.0,
         speed: 1.5,
         loop: true,
       });
@@ -136,18 +138,18 @@
           fixed(),
         ]);
 
-        // top * not sure if I want it
-        // add([
-        //   pos(width() * 0.5, 60),
-        //   origin("top"),
-        //   rect(width(), 50),
-        //   opacity(0),
-        //   solid(),
-        //   area(),
-        //   fixed(),
-        // ]);
+        // key
+        const key = add([
+          sprite("key"),
+          "key",
+          scale(0.2),
+          area(),
+          pos(),
+          // body(),
+          fixed(),
+        ]);
 
-        mouseClick(() => {
+        const playAnim = () => {
           if (!chest.isOpen()) {
             chest.open();
             shake(10);
@@ -171,6 +173,34 @@
               }, 10000);
             }, 1700);
           }
+        };
+        // simple drag an drop
+
+        chest.clicks(() => {
+          playAnim();
+        });
+
+        let draggin = false;
+
+        key.clicks(() => {
+          draggin = true;
+        });
+
+        key.action(() => {
+          if (draggin) {
+            key.pos = mousePos();
+          }
+        });
+
+        // key.collides("tag2", () => {
+        //   destroy("tag2");
+        // });
+        mouseRelease(() => {
+          if (key.isColliding(chest)) {
+            destroy(key);
+            playAnim();
+          }
+          draggin = false;
         });
 
         loop(3, () => {
@@ -199,7 +229,9 @@
           music.play();
         });
       });
+
       go("open_chest");
     </script>
+    <script></script>
   </body>
 </html>
