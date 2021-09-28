@@ -36,10 +36,32 @@
       loadSprite("key", "./assets/key.png", "key");
       loadSprite("wallpaper", "./assets/wallpaper.jpeg");
       loadSprite("treasure", "./assets/treasure.png");
+      loadSprite("first", "./assets/first.png");
+      loadSprite("second", "./assets/second.png");
+      loadSprite("third", "./assets/third.png");
+      loadSprite("fourth", "./assets/fourth.png");
+
       loadSprite("sparkle", "./assets/sparkle.png");
 
       // actions
-      function status() {
+
+      const keyStatus = () => {
+        let dragging = false;
+
+        return {
+          isDraggin() {
+            return dragging;
+          },
+          stopDragging() {
+            dragging = false;
+          },
+          startDagging() {
+            dragging = true;
+          },
+        };
+      };
+
+      const chestStatus = () => {
         let isOpen = false;
         return {
           isOpen() {
@@ -57,20 +79,69 @@
               pos(width() * 0.5, height() - 270),
               origin("top"),
               scale(0.4),
-              status(),
+              chestStatus(),
             ]);
           },
           addReward() {
-            const addReward = add([
+            const addFullChest = add([
               sprite("treasure"),
               pos(center()),
               origin("bot"),
               scale(0.3),
-              status(),
-              // move(vec2(0, -1), 30),
+              chestStatus(),
               solid(),
               area(),
             ]);
+            setTimeout(() => {
+              destroy(addFullChest);
+              const addFirstStat = add([
+                sprite("first"),
+                pos(center()),
+                origin("bot"),
+                scale(0.3),
+                chestStatus(),
+                solid(),
+                area(),
+              ]);
+
+              setTimeout(() => {
+                destroy(addFirstStat);
+                const addSecondStat = add([
+                  sprite("second"),
+                  pos(center()),
+                  origin("bot"),
+                  scale(0.3),
+                  chestStatus(),
+                  solid(),
+                  area(),
+                ]);
+
+                setTimeout(() => {
+                  destroy(addSecondStat);
+                  const addThirdStat = add([
+                    sprite("third"),
+                    pos(center()),
+                    origin("bot"),
+                    scale(0.3),
+                    chestStatus(),
+                    solid(),
+                    area(),
+                  ]);
+                  setTimeout(() => {
+                    destroy(addThirdStat);
+                    const addFourthStat = add([
+                      sprite("fourth"),
+                      pos(center()),
+                      origin("bot"),
+                      scale(0.3),
+                      chestStatus(),
+                      solid(),
+                      area(),
+                    ]);
+                  }, 600);
+                }, 600);
+              }, 600);
+            }, 600);
           },
           addChest() {
             add([
@@ -78,16 +149,16 @@
               pos(width() * 0.5, height() * 0.9),
               origin("top"),
               scale(0.4),
-              status(),
+              chestStatus(),
             ]);
           },
           playShake() {
             const shakes = play("shake", {
-              volume: 0,
+              volume: 1.5,
             });
           },
           playSparkle() {
-            loop(0.3, () => {
+            loop(0.2, () => {
               const sparkle = add([
                 sprite("sparkle"),
                 scale(1.9),
@@ -101,9 +172,8 @@
               }, rand(300, 800));
             });
           },
-          openChest() {},
         };
-      }
+      };
 
       const fanfare = play("fanfare", { volume: 0.6, speed: 1 });
       const music = play("waiting", {
@@ -121,13 +191,24 @@
           pos(width() * 0.5, height() * 0.5),
           origin("bot"),
           scale(0.4),
-          status(),
+          chestStatus(),
           solid(),
           area(),
           body(),
         ]);
 
-        // base
+        const key = add([
+          sprite("key"),
+          "key",
+          scale(0.15),
+          area(),
+          pos(10, height() * 0.8),
+          // body(),
+          fixed(),
+          keyStatus(),
+        ]);
+
+        // base where the chest will land
         add([
           pos(width() * 0.5, height() * 0.9),
           origin("top"),
@@ -138,18 +219,7 @@
           fixed(),
         ]);
 
-        // key
-        const key = add([
-          sprite("key"),
-          "key",
-          scale(0.2),
-          area(),
-          pos(),
-          // body(),
-          fixed(),
-        ]);
-
-        const playAnim = () => {
+        const playChestAnimation = () => {
           if (!chest.isOpen()) {
             chest.open();
             shake(10);
@@ -177,30 +247,25 @@
         // simple drag an drop
 
         chest.clicks(() => {
-          playAnim();
+          playChestAnimation();
         });
 
-        let draggin = false;
-
         key.clicks(() => {
-          draggin = true;
+          key.startDagging();
         });
 
         key.action(() => {
-          if (draggin) {
+          if (key.isDraggin()) {
             key.pos = mousePos();
           }
         });
 
-        // key.collides("tag2", () => {
-        //   destroy("tag2");
-        // });
         mouseRelease(() => {
           if (key.isColliding(chest)) {
             destroy(key);
-            playAnim();
+            playChestAnimation();
           }
-          draggin = false;
+          key.stopDragging();
         });
 
         loop(3, () => {
