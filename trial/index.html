@@ -34,11 +34,11 @@
       loadSprite("open_chest", "./assets/open_chest.png");
       loadSprite("key", "./assets/key.png", "key");
       loadSprite("wallpaper", "./assets/wallpaper.jpeg");
-      loadSprite("treasure", "./assets/treasure.png");
-      loadSprite("first", "./assets/first.png");
-      loadSprite("second", "./assets/second.png");
-      loadSprite("third", "./assets/third.png");
-      loadSprite("fourth", "./assets/fourth.png");
+      loadSprite("treasure", "./assets/one.png");
+      loadSprite("first", "./assets/two.png");
+      loadSprite("second", "./assets/three.png");
+      loadSprite("third", "./assets/four.png");
+      loadSprite("fourth", "./assets/five.png");
       loadSprite("sparkle", "./assets/sparkle.png");
 
       // key and chest details
@@ -134,6 +134,11 @@
                       solid(),
                       area(),
                     ]);
+                    addFourthStat.clicks(() => {
+                      go("open_chest");
+                      fanfareAudio.stop();
+                      playWaitingAudio.play();
+                    });
                   }, 1100);
                 }, 1100);
               }, 1100);
@@ -158,14 +163,14 @@
               const sparkle = add([
                 sprite("sparkle"),
                 scale(5),
-                pos(rand(width() * 0.3, width() * 0.7), height() * 0.6),
+                pos(rand(width() * 0.3, width() * 0.7), height() * 0.7),
                 origin("bot"),
                 area(),
                 move(vec2(0, -1), 900),
               ]);
               setTimeout(() => {
                 destroy(sparkle);
-              }, rand(200, 400));
+              }, rand(200, 600));
             });
           },
         };
@@ -238,9 +243,6 @@
               setTimeout(() => {
                 fanfareAudio.play();
               }, 100);
-              setTimeout(() => {
-                go("replay");
-              }, 10000);
             }, 1700);
           }
         };
@@ -277,23 +279,6 @@
         });
 
         focus();
-      });
-
-      scene("replay", () => {
-        add([
-          text(`Replay? (Y)`, { size: width() / 13 }),
-          keyPress("y", () => {
-            go("open_chest");
-            fanfareAudio.stop();
-            playWaitingAudio.play();
-          }),
-          origin("center"),
-          pos(width() * 0.5, height() * 0.5),
-        ]);
-        mouseClick(() => {
-          go("open_chest");
-          playWaitingAudio.play();
-        });
       });
 
       //starts open chest scene
