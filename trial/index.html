@@ -41,7 +41,7 @@
       loadSprite("fourth", "./assets/fourth.png");
       loadSprite("sparkle", "./assets/sparkle.png");
 
-      //
+      // key and chest details
       const keyStatus = () => {
         let dragging = false;
         return {
@@ -148,7 +148,7 @@
               chestStatus(),
             ]);
           },
-          playShake() {
+          playShakeAudio() {
             const shakes = play("shake", {
               volume: 1.5,
             });
@@ -165,23 +165,24 @@
               ]);
               setTimeout(() => {
                 destroy(sparkle);
-              }, rand(300, 800));
+              }, rand(400, 800));
             });
           },
         };
       };
 
-      const fanfare = play("fanfare", { volume: 0.6, speed: 1 });
-      const music = play("waiting", {
-        volume: 0.0,
+      const playFanfare = play("fanfare", { volume: 0.6, speed: 1 });
+      const playWaitingAudio = play("waiting", {
+        volume: 0.6,
         speed: 1.5,
         loop: true,
       });
 
       scene("open_chest", () => {
-        fanfare.stop(); // stop fanfare from playing in the beginning
+        playFanfare.stop(); // stop fanfare from playing in the beginning
         const background = add([sprite("wallpaper"), fixed(), pos(0, 0)]);
 
+        // adds chest to the scene
         const chest = add([
           sprite("full_chest"),
           pos(width() * 0.5, height() * 0.5),
@@ -193,6 +194,7 @@
           body(),
         ]);
 
+        // adds a key in the bottom left of the scene
         const key = add([
           sprite("key"),
           "key",
@@ -221,7 +223,7 @@
             shake(10);
             setTimeout(() => {
               chest.addOpenChest();
-              music.stop();
+              playWaitingAudio.stop();
               play("chime", {
                 volume: 1,
                 speed: 0.9,
@@ -232,7 +234,7 @@
                 chest.playSparkle();
               }, 100);
               setTimeout(() => {
-                fanfare.play();
+                playFanfare.play();
               }, 100);
               setTimeout(() => {
                 go("replay");
@@ -240,12 +242,12 @@
             }, 1700);
           }
         };
-        // simple drag an drop
 
         chest.clicks(() => {
           playChestAnimation();
         });
 
+        //drags the key while holding mouse
         key.clicks(() => {
           key.startDagging();
         });
@@ -264,10 +266,11 @@
           key.stopDragging();
         });
 
+        // jumping animation and
         loop(3, () => {
           if (chest.isOpen() === false) {
             chest.jump();
-            chest.playShake();
+            chest.playShakeAudio();
           }
         });
 
@@ -279,15 +282,15 @@
           text(`Replay? (Y)`, { size: width() / 13 }),
           keyPress("y", () => {
             go("open_chest");
-            fanfare.stop();
-            music.play();
+            playFanfare.stop();
+            playWaitingAudio.play();
           }),
           origin("center"),
           pos(width() * 0.5, height() * 0.5),
         ]);
         mouseClick(() => {
           go("open_chest");
-          music.play();
+          playWaitingAudio.play();
         });
       });
 
