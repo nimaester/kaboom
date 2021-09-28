@@ -83,7 +83,7 @@
               sprite("treasure"),
               pos(center()),
               origin("bot"),
-              scale(0.3),
+              scale(0.6),
               chestStatus(),
               solid(),
               area(),
@@ -94,7 +94,7 @@
                 sprite("first"),
                 pos(center()),
                 origin("bot"),
-                scale(0.3),
+                scale(0.6),
                 chestStatus(),
                 solid(),
                 area(),
@@ -106,7 +106,7 @@
                   sprite("second"),
                   pos(center()),
                   origin("bot"),
-                  scale(0.3),
+                  scale(0.6),
                   chestStatus(),
                   solid(),
                   area(),
@@ -118,7 +118,7 @@
                     sprite("third"),
                     pos(center()),
                     origin("bot"),
-                    scale(0.3),
+                    scale(0.6),
                     chestStatus(),
                     solid(),
                     area(),
@@ -129,15 +129,15 @@
                       sprite("fourth"),
                       pos(center()),
                       origin("bot"),
-                      scale(0.3),
+                      scale(0.6),
                       chestStatus(),
                       solid(),
                       area(),
                     ]);
-                  }, 600);
-                }, 600);
-              }, 600);
-            }, 600);
+                  }, 1100);
+                }, 1100);
+              }, 1100);
+            }, 1100);
           },
           addChest() {
             add([
@@ -157,15 +157,15 @@
             loop(0.2, () => {
               const sparkle = add([
                 sprite("sparkle"),
-                scale(1.9),
-                pos(rand(width() * 0.35, width() * 0.65), height() * 0.6),
+                scale(5),
+                pos(rand(width() * 0.3, width() * 0.7), height() * 0.6),
                 origin("bot"),
                 area(),
-                move(vec2(0, -1), 500),
+                move(vec2(0, -1), 900),
               ]);
               setTimeout(() => {
                 destroy(sparkle);
-              }, rand(400, 800));
+              }, rand(200, 400));
             });
           },
         };
