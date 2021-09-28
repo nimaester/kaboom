@@ -25,12 +25,11 @@
         crisp: true,
       });
 
-      // Assets needed
+      // sounds and sprites
       loadSound("chime", "./assets/chime.mp3");
       loadSound("fanfare", "./assets/fanfare.mp3");
       loadSound("shake", "./assets/shake.wav");
       loadSound("waiting", "./assets/waiting.wav");
-
       loadSprite("full_chest", "./assets/chest.png");
       loadSprite("open_chest", "./assets/open_chest.png");
       loadSprite("key", "./assets/key.png", "key");
@@ -40,14 +39,11 @@
       loadSprite("second", "./assets/second.png");
       loadSprite("third", "./assets/third.png");
       loadSprite("fourth", "./assets/fourth.png");
-
       loadSprite("sparkle", "./assets/sparkle.png");
 
-      // actions
-
+      //
       const keyStatus = () => {
         let dragging = false;
-
         return {
           isDraggin() {
             return dragging;
