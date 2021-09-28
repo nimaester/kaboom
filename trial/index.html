@@ -171,15 +171,16 @@
         };
       };
 
-      const playFanfare = play("fanfare", { volume: 0.6, speed: 1 });
+      const fanfareAudio = play("fanfare", { volume: 0.6, speed: 1 });
       const playWaitingAudio = play("waiting", {
         volume: 0.6,
         speed: 1.5,
         loop: true,
       });
 
+      // initial loadout scene
       scene("open_chest", () => {
-        playFanfare.stop(); // stop fanfare from playing in the beginning
+        fanfareAudio.stop(); // stop fanfare from playing in the beginning
         const background = add([sprite("wallpaper"), fixed(), pos(0, 0)]);
 
         // adds chest to the scene
@@ -219,6 +220,7 @@
 
         const playChestAnimation = () => {
           if (!chest.isOpen()) {
+            destroy(key);
             chest.open();
             shake(10);
             setTimeout(() => {
@@ -234,7 +236,7 @@
                 chest.playSparkle();
               }, 100);
               setTimeout(() => {
-                playFanfare.play();
+                fanfareAudio.play();
               }, 100);
               setTimeout(() => {
                 go("replay");
@@ -282,7 +284,7 @@
           text(`Replay? (Y)`, { size: width() / 13 }),
           keyPress("y", () => {
             go("open_chest");
-            playFanfare.stop();
+            fanfareAudio.stop();
             playWaitingAudio.play();
           }),
           origin("center"),
@@ -294,6 +296,7 @@
         });
       });
 
+      //starts open chest scene
       go("open_chest");
     </script>
     <script></script>
