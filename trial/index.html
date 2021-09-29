@@ -34,11 +34,11 @@
       loadSprite("open_chest", "./assets/open_chest.png");
       loadSprite("key", "./assets/key.png", "key");
       loadSprite("wallpaper", "./assets/wallpaper.jpeg");
-      loadSprite("treasure", "./assets/one.png");
-      loadSprite("first", "./assets/two.png");
-      loadSprite("second", "./assets/three.png");
-      loadSprite("third", "./assets/four.png");
-      loadSprite("fourth", "./assets/five.png");
+      loadSprite("treasure", "./assets/first.png");
+      loadSprite("first", "./assets/second.png");
+      loadSprite("second", "./assets/third.png");
+      loadSprite("third", "./assets/fourth.png");
+      loadSprite("fourth", "./assets/fifth.png");
       loadSprite("sparkle", "./assets/sparkle.png");
 
       // key and chest details
@@ -159,7 +159,7 @@
             });
           },
           playSparkle() {
-            loop(0.2, () => {
+            loop(0.3, () => {
               const sparkle = add([
                 sprite("sparkle"),
                 scale(5),
